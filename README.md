@@ -62,7 +62,7 @@ Once we have the USD issued to PartyC, we can Create and Issue the HouseToken to
     start CreateAndIssueOffsetToken owner: GreenCo, offsetPrice: 10000 USD, offsetType: carbon(co2), offsetUnit: ton, source: 122322, otherInfo: RainforestPreservation, expiryDays: 365
     start CreateTransferRequestInitiator requestTo: GreenCo
     run vaultQuery contractStateType: com.prannav.carbonOffset.states.TransferRequestState
-    start AcceptTransferRequest transferReqId: 2d7eec9f-475d-4438-995b-9ced1e7ffb3e, offsetId: fb228141-b284-4cd7-ba77-1d5826a22171
+    start AcceptTransferRequest transferReqId: de2d1188-1e74-40b5-819d-abeb42fa8362, offsetId: 0e6cf4da-ece7-449b-bf6c-2341c8265eb4
 
 We can now check the issued house token in PartyB's vault. Since we issued it as a [NonFungible](https://training.corda.net/libraries/tokens-sdk/#nonfungibletoken) token we can query the vault for non-fungible tokens.
     

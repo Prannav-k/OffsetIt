@@ -20,17 +20,22 @@ class TransferRequestContract : Contract {
     // does not throw an exception.
     override fun verify(tx: LedgerTransaction) {
         // Verification logic goes here.
-        val command = tx.commands.requireSingleCommand<Commands.Create>()
+        val command = tx.commands.requireSingleCommand<Commands>()
         val output = tx.outputsOfType<TransferRequestState>().first()
         when (command.value) {
             is Commands.Create -> requireThat {
                 "No inputs should be consumed when sending the transfer req.".using(tx.inputStates.isEmpty())
             }
+
+            is Commands.Update -> requireThat {
+            }
         }
+
     }
 
     // Used to indicate the transaction's intent.
     interface Commands : CommandData {
         class Create : Commands
+        class Update : Commands
     }
 }

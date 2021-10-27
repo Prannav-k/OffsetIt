@@ -39,15 +39,15 @@ class AcceptTransferRequest(
         //get the transfer req
         val transferReqInputCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(UniqueIdentifier.fromString(transferReqId)))
         val transferReqStateAndRef = serviceHub.vaultService.queryBy<TransferRequestState>(criteria = transferReqInputCriteria).states.single()
-        val transferReqState = transferReqStateAndRef.state.data
-        val buyer = transferReqState.requestFrom
+        val inputTransferReqState = transferReqStateAndRef.state.data
+        val buyer = inputTransferReqState.requestFrom
 
-        logger.info("Fetched transfer req state ${transferReqState}")
+        logger.info("Fetched transfer req state ${inputTransferReqState}")
         // Get the offset state from provided id
         val inputCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(UniqueIdentifier.fromString(offsetId)))
         val offsetStateAndRef = serviceHub.vaultService.queryBy<OffsetTokenState>(criteria = inputCriteria).states.single()
         val offsetTokenState = offsetStateAndRef.state.data
-        logger.info("offset token fetched is $offsetTokenState");
+        logger.info("offset token fetched is $offsetTokenState")
         //Build the txn
         val txBuilder = TransactionBuilder(notary)
 
@@ -64,6 +64,8 @@ class AcceptTransferRequest(
         val ftx= subFlow(CollectSignaturesFlow(initialSignedTxn, listOf(buyerSession)))
         val stx = subFlow(FinalityFlow(ftx, listOf(buyerSession)))
         subFlow(UpdateDistributionListFlow(stx))
+
+        subFlow(UpdateTransferReqStatusInitiator(transferReqId))
         return ("\nOffset transferred to " + buyer.name.organisation + "\nTransaction ID: " + stx.id)
     }
 }

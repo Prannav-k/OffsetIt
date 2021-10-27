@@ -15,4 +15,6 @@ data class TransferRequestState(
                                 val status : String,
                                 override val linearId: UniqueIdentifier = UniqueIdentifier()): LinearState {
     override val participants: List<AbstractParty> get() = listOf(requestFrom, requestTo)
+    fun withNewStatus(newStatus: String) = copy(status = newStatus)
+
 }

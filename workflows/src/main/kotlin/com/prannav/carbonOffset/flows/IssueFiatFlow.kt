@@ -17,9 +17,9 @@ import net.corda.core.utilities.ProgressTracker
 // * Flows *
 // *********
 @StartableByRPC
-class FiatCurrencyIssueFlow(val currency: String,
-                            val amount: Long,
-                            val recipient: Party) : FlowLogic<String>() {
+class IssueFiatFlow(val currency: String,
+                    val amount: Long,
+                    val recipient: Party) : FlowLogic<String>() {
     override val progressTracker = ProgressTracker()
 
     @Suspendable

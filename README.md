@@ -11,13 +11,20 @@ But how do multiple organisations, regulating bodies and governments of differen
 
 Note: This app's primary aim is show how multiple parties can come up and transact credits/offsets in a trustful , tamperproof way. App assumes the source of offsets and governance rules are reliable. This is initial version of the app developed as part of corda dev week apac 2021 thus leaving a lot of scope for developing a complete solution.
 
-### Flows
+### Participants
 
-There are three flows that we'll primarily use in this example that you'll be building off of.
+1. Verifier (Individual authorised party to verify the offset and issue them with offset token)
+2. GreenCo (An organization that does the carbon offset like rain forest preservation, wetland restoration or works on environmental tech)
+3. Org1 (An airline organization that is committed to reduce its carbon footprint)
 
-1. We'll start with running `FiatCurrencyIssueFlow`.
-2. We'll then create and issue a house token using `HouseTokenCreateAndIssueFlow`.
-3. We'll then initiate the sale of the house through `HouseSaleInitiatorFlow`.
+### Sequence and Flows
+
+Below is the sequence that will be demonstrated
+
+1. Initially we will issue some USD using `IssueFiatFlow`.
+2. Then verifier once verified will issue an offset token using `CreateAndIssueOffsetToken`.
+3. An organisation can request for a transfer / buy offset token using  `CreateTransferRequest`. (Note : For buying/transfer a request and accept mechanism is developed to avoid misuse of direct transfer)
+4. The green co then can accept the request using `AcceptTransferRequest`
 
 
 
@@ -26,8 +33,8 @@ For development environment setup, please refer to: [Setup Guide](https://docs.c
 
 # Usage
 
-## Running the nodes
-Open a terminal and go to the project root directory and type: (to deploy the nodes using bootstrapper)
+## Bootstraping the nodes
+We have predefined nodes mentioned in build.gradle. Open a terminal and go to the project root directory and type: (to deploy the nodes using bootstrapper)
 ```
 ./gradlew clean deployNodes
 ```
@@ -35,7 +42,7 @@ Then type: (to run the nodes)
 ```
 ./build/nodes/runnodes
 ```
-## Interacting with the nodes
+## Invoking the flows
 
 When started via the command line, each node will display an interactive shell:
 
@@ -46,43 +53,32 @@ When started via the command line, each node will display an interactive shell:
 
 You can use this shell to interact with your node.
 
-First go to the shell of PartyA and issue some USD to Party C. We will need the fiat currency to exchange it for the house token. 
+Lets start by going to the shell of Verifier and issue some USD to Org1 (Issuing should in real be done by federal/reserve bank). Org1 will need the fiat currency to exchange it for the Offset Token. 
 
-    start FiatCurrencyIssueFlow currency: USD, amount: 100000000, recipient: PartyC
+    start IssueFiatFlow currency: USD, amount: 2000000, recipient: Org1
 
-    start FiatCurrencyIssueFlow currency: USD, amount: 2000000, recipient: Org1
+In the same shell, lets issue an offset token to green co for their good work.
 
-We can now go to the shell of PartyC and check the amount of USD issued. Since fiat currency is a fungible token we can query the vault for [FungibleToken](https://training.corda.net/libraries/tokens-sdk/#fungibletoken) states.
-
-    run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.FungibleToken
-    
-Once we have the USD issued to PartyC, we can Create and Issue the HouseToken to PartyB. Goto PartyA's shell to create and issue the house token.
-
-    start FiatCurrencyIssueFlow currency: USD, amount: 2000000, recipient: Org1
     start CreateAndIssueOffsetToken owner: GreenCo, offsetPrice: 10000 USD, offsetType: carbon(co2), offsetUnit: ton, source: 122322, otherInfo: RainforestPreservation, expiryDays: 365
+
+After offset token getting issues, we . Goto Org1's shell to create a transfer req.
+
     start CreateTransferRequestInitiator requestTo: GreenCo
+
+From Green co's shell we can now check the transfer requests received.
+    
     run vaultQuery contractStateType: com.prannav.carbonOffset.states.TransferRequestState
-    start AcceptTransferRequest transferReqId: de2d1188-1e74-40b5-819d-abeb42fa8362, offsetId: 0e6cf4da-ece7-449b-bf6c-2341c8265eb4
+    
+From the same shell , lets accept the request. Note : Transfer req id and offset Id are available as responses from above steps or can be fetched from below mentioned vault query commands. 
 
-We can now check the issued house token in PartyB's vault. Since we issued it as a [NonFungible](https://training.corda.net/libraries/tokens-sdk/#nonfungibletoken) token we can query the vault for non-fungible tokens.
-    
-    run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.NonFungibleToken
-    
-Note that HouseState token is an evolvable token which is a [LinearState](https://docs.corda.net/docs/corda-os/api-states.html#linearstate), thus we can check PartyB's vault to view the [EvolvableToken](https://training.corda.net/libraries/tokens-sdk/#evolvabletokentype)
+    start AcceptTransferRequest transferReqId: <transferReqId>, offsetId: <offsetId>
 
-    run vaultQuery contractStateType: com.prannav.carbonOffset.states.OffsetTokenState
-    
-Note the linearId of the HouseState token from the previous step, we will need it to perform our DvP opearation. Goto PartyB's shell to initiate the token sale.
-    
-    start HouseSale houseId: <XXXX-XXXX-XXXX-XXXXX>, buyer: PartyC
-    454DFDEDA82FAF097F550760C502A21CD08BADB9878E8632BFD3C1461B21EB6A
-    start SellOffset transferReqId: 06f45506-09bd-4933-a816-eaacb071f158, offsetId: af293754-1e14-4f2c-9349-10daf87c395a
-    af293754-1e14-4f2c-9349-10daf87c395a
-    start HouseSale houseId: 9de61875-2752-4b9e-9d0c-0beadcbdc2ae, buyer: PartyC
+Below commands can be used to verify the transfers in each node
 
-We could now verify that the non-fungible token has been transferred to PartyC and some 100,000 USD from PartyC's vault has been transferred to PartyB. Run the below commands in PartyB and PartyC's shell to verify the same
-    
-    // Run on PartyB's shell
+Command to fetch the fungible tokens available in the vault (fiat USD in this case)
+
     run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.FungibleToken
-    // Run on PartyC's shell
+
+Command to fetch non-fungible tokens available in the vault (offset token in this case)
+
     run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.NonFungibleToken

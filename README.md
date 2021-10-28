@@ -13,7 +13,7 @@ Note: This app's primary aim is show how multiple parties can come up and transa
 
 ### Participants
 
-1. Verifier (Individual authorised party to verify the offset and issue them with offset token)
+1. MinistryOfEnvironment (Part of govt authorised to verify the offset and issue the offset source with offset token)
 2. GreenCo (An organization that does the carbon offset like rain forest preservation, wetland restoration or works on environmental tech)
 3. Org1 (An airline organization that is committed to reduce its carbon footprint)
 
@@ -22,7 +22,7 @@ Note: This app's primary aim is show how multiple parties can come up and transa
 Below is the sequence that will be demonstrated
 
 1. Initially we will issue some USD using `IssueFiatFlow`.
-2. Then verifier once verified will issue an offset token using `CreateAndIssueOffsetToken`.
+2. Then MinistryOfEnvironment once verified will issue an offset token using `CreateAndIssueOffsetToken`.
 3. An organisation can request for a transfer / buy offset token using  `CreateTransferRequest`. (Note : For buying/transfer a request and accept mechanism is developed to avoid misuse of direct transfer)
 4. The green co then can accept the request using `AcceptTransferRequest`
 
@@ -53,7 +53,7 @@ When started via the command line, each node will display an interactive shell:
 
 You can use this shell to interact with your node.
 
-Let's start by going to the shell of Verifier and issue some USD to Org1 (Issuing should in real be done by federal/reserve bank). Org1 will need the fiat currency to exchange it for the Offset Token. 
+Let's start by going to the shell of MinistryOfEnvironment and issue some USD to Org1 (Issuing should in real be done by federal/reserve bank). Org1 will need the fiat currency to exchange it for the Offset Token. 
 
     start IssueFiatFlow currency: USD, amount: 2000000, recipient: Org1
 
@@ -72,6 +72,13 @@ From Green co's shell we can now check the transfer requests received. The outpu
 From the same shell , lets accept the request. Note : Transfer req id and offset Id are available as responses from above steps or can be fetched from below mentioned vault query commands. 
 
     start AcceptTransferRequest transferReqId: <transferReqId>, offsetId: <offsetId>
+    sample : start AcceptTransferRequest transferReqId: 2e107aa4-570d-4a0f-809f-bb235a8e15d0, offsetId: b364e0d1-4014-416b-98a1-e116d34934df
+
+Now from org1 shell, lets redeem the offset token.
+
+    start RedeemOffsetFlow offsetId: <offsetId>
+    sample : start RedeemOffsetFlow offsetId: b364e0d1-4014-416b-98a1-e116d34934df
+
 
 Below commands can be used to verify the transfers in each node
 

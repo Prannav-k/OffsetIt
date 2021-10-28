@@ -5,7 +5,6 @@ import net.corda.core.contracts.Contract
 import net.corda.core.contracts.Requirements
 import net.corda.core.contracts.requireThat
 import net.corda.core.transactions.LedgerTransaction
-import com.prannav.carbonOffset.states.HouseState
 import com.prannav.carbonOffset.states.OffsetTokenState
 import net.corda.core.contracts.Requirements.using
 

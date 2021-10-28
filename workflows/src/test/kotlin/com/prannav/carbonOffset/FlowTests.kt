@@ -1,12 +1,9 @@
 package com.prannav.carbonOffset
 
-import com.google.common.collect.ImmutableList
 import net.corda.core.contracts.Amount
 import net.corda.core.node.services.Vault.StateStatus
 import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.node.services.vault.QueryCriteria.LinearStateQueryCriteria
-import com.prannav.carbonOffset.flows.CreateAndIssueHouseToken
-import com.prannav.carbonOffset.states.HouseState
 import net.corda.testing.common.internal.testNetworkParameters
 import net.corda.testing.node.MockNetwork
 import net.corda.testing.node.MockNetworkParameters

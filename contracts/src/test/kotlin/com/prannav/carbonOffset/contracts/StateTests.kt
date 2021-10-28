@@ -1,6 +1,5 @@
 package com.prannav.carbonOffset.contracts
 
-import com.prannav.carbonOffset.states.HouseState
 import net.corda.testing.node.MockServices
 import org.junit.Test
 

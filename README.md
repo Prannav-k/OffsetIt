@@ -5,7 +5,7 @@ A distributed ledger application where carbon offsets can be issued , transferre
 
 ## Background
 
-Carbon offset is a way of removing same or even more emissions than an organization can emit. This procedure would be very helpful especially in industries like Airline where no better alternatives can be provided at this point.
+Carbon offset is a way of removing equal or even more emissions than an organization can emit. This procedure would be very helpful especially in industries like Airline where no better alternatives can be provided at this point.
 
 But how do multiple organisations, regulating bodies and governments of different countries come together and trust a single platform? There comes this solution where multiple parties can come together and transact their offsets in a trustful way.
 
@@ -46,12 +46,9 @@ Then type: (to run the nodes)
 
 When started via the command line, each node will display an interactive shell:
 
-    Welcome to the Corda interactive shell.
-    Useful commands include 'help' to see what is available, and 'bye' to shut down the node.
-    
-    Tue July 09 11:58:13 GMT 2019>>>
+Use each nodes shell to perform below commands.
 
-You can use this shell to interact with your node.
+Let's start by going to the shell of Verifier and issue some USD to Org1 (Issuing should in real be done by federal/reserve bank). Org1 will need the fiat currency to buy it for the Offset Token. 
 
 Let's start by going to the shell of MinistryOfEnvironment and issue some USD to Org1 (Issuing should in real be done by federal/reserve bank). Org1 will need the fiat currency to exchange it for the Offset Token. 
 

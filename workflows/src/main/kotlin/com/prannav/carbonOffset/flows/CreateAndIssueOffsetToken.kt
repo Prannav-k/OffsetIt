@@ -48,6 +48,6 @@ class CreateAndIssueOffsetToken(val owner: Party,
         //Issue the offset
         val stx = subFlow(IssueTokens(listOf(offsetToken)))
 
-        return ("The offset is now a nft with id " + offsetState.linearId + " , Transaction ID: " + stx.id)
+        return ("The offset is now a nft with id " + offsetState.linearId + " , and is processed with txn Id: " + stx.id)
     }
 }

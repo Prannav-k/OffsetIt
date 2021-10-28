@@ -24,8 +24,11 @@ class TransferRequestContract : Contract {
         val output = tx.outputsOfType<TransferRequestState>().first()
         when (command.value) {
             is Commands.Create -> requireThat {
+                //Checks on input and outputs
                 "No inputs should be consumed when sending the transfer req.".using(tx.inputStates.isEmpty())
                 "Only one output state should be created when issuing." using (tx.outputs.size == 1)
+
+                //Checks on status and participant
                 "Initial status should be requested only." using (output.status == "requested")
                 "Request from and To should not be same." using (output.requestFrom != output.requestTo)
                 val signers = command.signers
@@ -33,9 +36,11 @@ class TransferRequestContract : Contract {
             }
 
             is Commands.Update -> requireThat {
+                //Checks on input and outputs
                 "Only one input should be consumed when updating." using (tx.inputs.size == 1)
                 "Only one output state should be created when updating." using (tx.outputs.size == 1)
 
+                //Check on status
                 val inputState = tx.inputsOfType<TransferRequestState>().single()
                 "Transfer requests can't be accepted if they are already accepted." using (inputState.status == "requested")
                 "After accepted status should be accepted only." using (output.status == "accepted")

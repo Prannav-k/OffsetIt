@@ -16,6 +16,7 @@ class OffsetContract : EvolvableTokenContract(), Contract {
     override fun additionalCreateChecks(tx: LedgerTransaction) {
         val outputState = tx.getOutput(0) as OffsetTokenState
         outputState.apply {
+            //Offset value checks
             require(outputState.offsetPrice.quantity > 0) {"Offsets cannot be of value 0"}
             require(outputState.expiryDays > 0) {"Offsets expiry days cannot less than of 0 days"}
             require(outputState.expiryDays < 1096) {"Offsets expiry days can't be more than 1-95 days (3 years) "}
@@ -31,7 +32,8 @@ class OffsetContract : EvolvableTokenContract(), Contract {
         val outputState = tx.getOutput(0) as OffsetTokenState
         val inputState = tx.getInput(0) as OffsetTokenState
 
-        outputState.apply {offsetType
+        outputState.apply {
+            //checks on data that cant be changed
             require(inputState.source != outputState.source) {"Source value cannot be changed"}
             require(inputState.offsetType != outputState.offsetType) {"offsetType value cannot be changed"}
             require(inputState.offsetUnit != outputState.offsetUnit) {"offsetUnit value cannot be changed"}

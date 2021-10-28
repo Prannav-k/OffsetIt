@@ -53,22 +53,22 @@ When started via the command line, each node will display an interactive shell:
 
 You can use this shell to interact with your node.
 
-Lets start by going to the shell of Verifier and issue some USD to Org1 (Issuing should in real be done by federal/reserve bank). Org1 will need the fiat currency to exchange it for the Offset Token. 
+Let's start by going to the shell of Verifier and issue some USD to Org1 (Issuing should in real be done by federal/reserve bank). Org1 will need the fiat currency to exchange it for the Offset Token. 
 
     start IssueFiatFlow currency: USD, amount: 2000000, recipient: Org1
 
-In the same shell, lets issue an offset token to green co for their good work.
+In the same shell, lets issue an offset token to green co for their good work. The output nft id will be used for further transfer
 
     start CreateAndIssueOffsetToken owner: GreenCo, offsetPrice: 10000 USD, offsetType: carbon(co2), offsetUnit: ton, source: 122322, otherInfo: RainforestPreservation, expiryDays: 365
 
-After offset token getting issues, we . Goto Org1's shell to create a transfer req.
+After offset token getting issues, we . Goto Org1's shell to create a transfer req id will be used further for transfer.
 
     start CreateTransferRequestInitiator requestTo: GreenCo
 
-From Green co's shell we can now check the transfer requests received.
+From Green co's shell we can now check the transfer requests received. The output transfer
     
     run vaultQuery contractStateType: com.prannav.carbonOffset.states.TransferRequestState
-    
+
 From the same shell , lets accept the request. Note : Transfer req id and offset Id are available as responses from above steps or can be fetched from below mentioned vault query commands. 
 
     start AcceptTransferRequest transferReqId: <transferReqId>, offsetId: <offsetId>

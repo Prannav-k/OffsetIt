@@ -42,16 +42,16 @@ class UpdateTransferReqStatusInitiator(private val reqId: String) : FlowLogic<St
         val transferReqStateAndRef = serviceHub.vaultService.queryBy<TransferRequestState>(criteria = transferReqInputCriteria).states.single()
         val inputTransferReqState = transferReqStateAndRef.state.data
 
-
-
         val notary = serviceHub.networkMapCache.notaryIdentities.single()
 
-        val output = inputTransferReqState.withNewStatus("Accepted")
+        val output = inputTransferReqState.withNewStatus("accepted")
 
         val builder = TransactionBuilder(notary)
             .addCommand(TransferRequestContract.Commands.Update(), listOf(inputTransferReqState.requestTo.owningKey, inputTransferReqState.requestFrom.owningKey))
             .addOutputState(output)
             .addInputState(transferReqStateAndRef)
+
+        logger.info("***** , ost is $output")
 
         builder.verify(serviceHub)
         val ptx = serviceHub.signInitialTransaction(builder)
